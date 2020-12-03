@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/sandokandias/go-database-app/pkg/godb/order"
 	"github.com/sandokandias/go-database-app/pkg/godb/postgres"
-	"github.com/sandokandias/go-database-app/pkg/godb/workspace"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -18,11 +18,11 @@ func main() {
 	db := connectDB()
 	defer db.Close()
 
-	workspaceStorage := postgres.NewWorkspaceStorage(db)
-	workspaceService := workspace.NewService(workspaceStorage)
-	workspaceHandler := workspace.NewHandler(workspaceService)
+	orderStorage := postgres.NewOrderStorage(db)
+	orderService := order.NewService(orderStorage)
+	orderHandler := order.NewHandler(orderService)
 
-	http.HandleFunc("/workspaces", workspaceHandler.Handler())
+	http.HandleFunc("/orders", orderHandler.Handler())
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

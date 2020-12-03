@@ -1,6 +1,7 @@
 package godb
 
-// CreateWorkspace type that represents a request for workspace creation
-type CreateWorkspace struct {
-	Name string `json:"name"`
+// CreateOrder type that represents a request for order creation
+type CreateOrder struct {
+	ID     string `json:"id"`
+	Amount int64  `json:"amount"`
 }

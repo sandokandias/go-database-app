@@ -1,4 +1,0 @@
-CREATE TABLE IF NOT EXISTS workspaces
-(
-    name VARCHAR(100) PRIMARY KEY
-);
