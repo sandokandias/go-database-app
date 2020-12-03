@@ -5,14 +5,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/sandokandias/go-database-app/pkg/godb"
+	"github.com/hashicorp/go-multierror"
 )
 
 // ErrorHandler handles error in handler layer and encodes to appropriate type
 func ErrorHandler(err error, w http.ResponseWriter, r *http.Request) {
 	switch e := err.(type) {
-	case godb.ValidationError:
-		b, _ := json.Marshal(e)
+	case *multierror.Error:
+		b, _ := json.Marshal(e.Errors)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(b)
