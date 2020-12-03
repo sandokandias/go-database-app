@@ -4,9 +4,9 @@ import (
 	"github.com/sandokandias/go-database-app/pkg/godb"
 )
 
-// RequiredString validates the required string
-func RequiredString(field, value string) error {
-	if value == "" {
+// StringRequired validates the required string
+func StringRequired(field, value string) error {
+	if value == "" || value == " " {
 		return godb.ErrRequiredField(field)
 	}
 	return nil

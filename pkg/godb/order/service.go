@@ -3,6 +3,7 @@ package order
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -25,8 +26,8 @@ func NewService(storage godb.OrderStorage) Service {
 
 // Order validate id field and gets from storage
 func (s Service) Order(ctx context.Context, id string) (godb.Order, error) {
-	if err := validators.RequiredString("id", id); err != nil {
-		return godb.Order{}, err
+	if strings.TrimSpace(id) == "" {
+		return godb.Order{}, nil
 	}
 
 	return s.storage.Order(ctx, id)
@@ -36,7 +37,7 @@ func (s Service) Order(ctx context.Context, id string) (godb.Order, error) {
 func (s Service) CreateOrder(ctx context.Context, o godb.CreateOrder) error {
 	var result error
 
-	if err := validators.RequiredString("id", o.ID); err != nil {
+	if err := validators.StringRequired("id", o.ID); err != nil {
 		result = multierror.Append(result, err)
 	}
 
@@ -50,7 +51,7 @@ func (s Service) CreateOrder(ctx context.Context, o godb.CreateOrder) error {
 	}
 
 	for i, it := range o.Items {
-		if err := validators.RequiredString(fmt.Sprintf("items[%d].name", i), it.Name); err != nil {
+		if err := validators.StringRequired(fmt.Sprintf("items[%d].name", i), it.Name); err != nil {
 			result = multierror.Append(result, err)
 		}
 
@@ -94,7 +95,7 @@ func (s Service) CreateOrder(ctx context.Context, o godb.CreateOrder) error {
 
 // DeleteOrder validates id field and removes order from storage
 func (s Service) DeleteOrder(ctx context.Context, id string) error {
-	if err := validators.RequiredString("id", id); err != nil {
+	if err := validators.StringRequired("id", id); err != nil {
 		return err
 	}
 
