@@ -12,9 +12,9 @@ import (
 func ErrorHandler(err error, w http.ResponseWriter, r *http.Request) {
 	switch e := err.(type) {
 	case godb.ValidationError:
-		w.WriteHeader(http.StatusBadRequest)
-		w.Header().Set("Content-Type", "application/json")
 		b, _ := json.Marshal(e)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write(b)
 	default:
 		log.Printf("error request handler: %v", e)

@@ -10,6 +10,18 @@ type Order struct {
 	ID        string
 	Amount    int64
 	CreatedAt time.Time
+	Items     Items
+}
+
+// Items type that represents a collection of items
+type Items []Item
+
+// Item type that represents a item of the order entity
+type Item struct {
+	ID       string
+	Name     string
+	Price    int64
+	Quantity int
 }
 
 // OrderStorage interface that defines the order storage operations

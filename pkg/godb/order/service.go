@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/sandokandias/go-database-app/pkg/godb"
 	"github.com/sandokandias/go-database-app/pkg/godb/validators"
 )
@@ -33,10 +35,22 @@ func (s Service) CreateOrder(ctx context.Context, o godb.CreateOrder) error {
 		return err
 	}
 
+	items := godb.Items{}
+	for _, i := range o.Items {
+		item := godb.Item{
+			ID:       uuid.New().String(),
+			Name:     i.Name,
+			Price:    i.Price,
+			Quantity: i.Quantity,
+		}
+		items = append(items, item)
+	}
+
 	order := godb.Order{
 		ID:        o.ID,
 		Amount:    o.Amount,
 		CreatedAt: time.Now(),
+		Items:     items,
 	}
 
 	if err := s.storage.SaveOrder(ctx, order); err != nil {

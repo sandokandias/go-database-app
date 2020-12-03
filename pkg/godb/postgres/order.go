@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sandokandias/go-database-app/pkg/godb"
 )
@@ -33,7 +34,8 @@ func (s OrderStorage) Order(ctx context.Context, id string) (godb.Order, error) 
 
 // SaveOrder persists entity order in postgresql
 func (s OrderStorage) SaveOrder(ctx context.Context, o godb.Order) error {
-	SQL := `INSERT INTO orders(order_id, amount, created_at) VALUES($1,$2,$3)`
+	orderSQL := `INSERT INTO orders(order_id, amount, created_at) VALUES($1,$2,$3)`
+	itemsSQL := `INSERT INTO items(item_id, order_id, name, price, quantity) VALUES($1,$2,$3,$4,$5)`
 
 	tx, err := s.db.Begin(ctx)
 	if err != nil {
@@ -47,9 +49,24 @@ func (s OrderStorage) SaveOrder(ctx context.Context, o godb.Order) error {
 		}
 	}()
 
-	_, err = tx.Exec(ctx, SQL, o.ID, o.Amount, o.CreatedAt)
+	batch := &pgx.Batch{}
+	batch.Queue(orderSQL, o.ID, o.Amount, o.CreatedAt)
+	for _, i := range o.Items {
+		batch.Queue(itemsSQL, i.ID, o.ID, i.Name, i.Price, i.Quantity)
+	}
+
+	br := tx.SendBatch(ctx, batch)
+
+	for i := 0; i < 1+len(o.Items); i++ {
+		_, err := br.Exec()
+		if err != nil {
+			return fmt.Errorf("exec insert order %v: %w", o, err)
+		}
+	}
+
+	err = br.Close()
 	if err != nil {
-		return fmt.Errorf("exec insert order %v: %w", o, err)
+		return fmt.Errorf("close batch insert order %v: %w", o, err)
 	}
 
 	err = tx.Commit(ctx)
