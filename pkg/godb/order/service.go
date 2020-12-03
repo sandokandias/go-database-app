@@ -50,33 +50,35 @@ func (s Service) CreateOrder(ctx context.Context, o godb.CreateOrder) error {
 		result = multierror.Append(result, err)
 	}
 
+	items := godb.Items{}
+
 	for i, it := range o.Items {
-		if err := validators.StringRequired(fmt.Sprintf("items[%d].name", i), it.Name); err != nil {
+		var err error
+		if err = validators.StringRequired(fmt.Sprintf("items[%d].name", i), it.Name); err != nil {
 			result = multierror.Append(result, err)
 		}
 
-		if err := validators.Int64GreaterZero(fmt.Sprintf("items[%d].price", i), it.Price); err != nil {
+		if err = validators.Int64GreaterZero(fmt.Sprintf("items[%d].price", i), it.Price); err != nil {
 			result = multierror.Append(result, err)
 		}
 
-		if err := validators.IntGreaterZero(fmt.Sprintf("items[%d].quantity", i), it.Quantity); err != nil {
+		if err = validators.IntGreaterZero(fmt.Sprintf("items[%d].quantity", i), it.Quantity); err != nil {
 			result = multierror.Append(result, err)
+		}
+
+		if err == nil {
+			item := godb.Item{
+				ID:       uuid.New().String(),
+				Name:     it.Name,
+				Price:    it.Price,
+				Quantity: it.Quantity,
+			}
+			items = append(items, item)
 		}
 	}
 
 	if result != nil {
 		return result
-	}
-
-	items := godb.Items{}
-	for _, i := range o.Items {
-		item := godb.Item{
-			ID:       uuid.New().String(),
-			Name:     i.Name,
-			Price:    i.Price,
-			Quantity: i.Quantity,
-		}
-		items = append(items, item)
 	}
 
 	order := godb.Order{
