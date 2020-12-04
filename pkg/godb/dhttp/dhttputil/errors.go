@@ -1,4 +1,4 @@
-package handlerutil
+package dhttputil
 
 import (
 	"encoding/json"

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/sandokandias/go-database-app/pkg/godb/handler/handlerutil"
+	"github.com/sandokandias/go-database-app/pkg/godb/dhttp/dhttputil"
 
 	"github.com/sandokandias/go-database-app/pkg/godb"
 )
@@ -39,12 +39,12 @@ func (h Handler) create(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(&co); err != nil {
-		handlerutil.ErrorHandler(err, w, r)
+		dhttputil.ErrorHandler(err, w, r)
 		return
 	}
 
 	if err := h.service.CreateOrder(ctx, co); err != nil {
-		handlerutil.ErrorHandler(err, w, r)
+		dhttputil.ErrorHandler(err, w, r)
 		return
 	}
 
