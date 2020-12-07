@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/sandokandias/go-database-app/pkg/godb"
+	"github.com/sandokandias/go-database-app/pkg/godb/order"
 )
 
 // OrderStorage type that implements OrderStorage interface for postgresql
@@ -21,9 +21,9 @@ func NewOrderStorage(db *pgxpool.Pool) OrderStorage {
 }
 
 // Order returns order by id from postgresql
-func (s OrderStorage) Order(ctx context.Context, id string) (godb.Order, error) {
+func (s OrderStorage) Order(ctx context.Context, id string) (order.Order, error) {
 	SQL := `SELECT order_id, amount, created_at FROM roders WHERE id = ?`
-	var o godb.Order
+	var o order.Order
 
 	if err := s.db.QueryRow(ctx, SQL, id).Scan(&o.ID, &o.Amount, &o.CreatedAt); err != nil {
 		return o, fmt.Errorf("query order by %v: %w", id, err)
@@ -33,7 +33,7 @@ func (s OrderStorage) Order(ctx context.Context, id string) (godb.Order, error) 
 }
 
 // SaveOrder persists entity order in postgresql
-func (s OrderStorage) SaveOrder(ctx context.Context, o godb.Order) error {
+func (s OrderStorage) SaveOrder(ctx context.Context, o order.Order) error {
 	orderSQL := `INSERT INTO orders(order_id, amount, created_at) VALUES($1,$2,$3)`
 	itemsSQL := `INSERT INTO items(item_id, order_id, name, price, quantity) VALUES($1,$2,$3,$4,$5)`
 
