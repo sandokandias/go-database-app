@@ -1,4 +1,4 @@
-package postgres
+package db
 
 import (
 	"context"
@@ -8,14 +8,19 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
+// TxManager type that represents the db transacion manager
 type TxManager struct {
 	DB *pgxpool.Pool
+	tx pgx.Tx
 }
 
+// NewTxManager creates a new transaction manager
 func NewTxManager(db *pgxpool.Pool) *TxManager {
 	return &TxManager{DB: db}
 }
 
+// Exec begins the transaction, call anomymous func and if everything is ok, then the transaction will be committed,
+// otherwise the transaction will be rollbacked
 func (t *TxManager) Exec(ctx context.Context, fn func(ctx context.Context, tx pgx.Tx) error) error {
 	tx, err := t.DB.Begin(ctx)
 	if err != nil {

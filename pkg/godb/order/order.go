@@ -12,14 +12,15 @@ import (
 
 // Order type that represents a order entity
 type Order struct {
-	ID        string
-	Amount    int64
-	CreatedAt time.Time
-	Items     Items
+	ID         string
+	Amount     int64
+	CreatedAt  time.Time
+	Items      Items
+	CustomerID string
 }
 
 // NewOrder validates the order fields and if ok, creates a new order
-func NewOrder(ID string, amount int64, items ItemsData) (Order, error) {
+func NewOrder(ID string, amount int64, items ItemsData, customerID string) (Order, error) {
 	var result error
 
 	if err := validators.StringRequired("id", ID); err != nil {
@@ -67,10 +68,11 @@ func NewOrder(ID string, amount int64, items ItemsData) (Order, error) {
 	}
 
 	order := Order{
-		ID:        ID,
-		Amount:    amount,
-		CreatedAt: time.Now(),
-		Items:     ii,
+		ID:         ID,
+		Amount:     amount,
+		CreatedAt:  time.Now(),
+		Items:      ii,
+		CustomerID: customerID,
 	}
 
 	return order, nil

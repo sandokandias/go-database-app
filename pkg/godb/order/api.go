@@ -4,12 +4,20 @@ import "context"
 
 // CreateOrder type that represents a request for order creation
 type CreateOrder struct {
-	ID     string     `json:"id"`
-	Amount int64      `json:"amount"`
-	Items  []ItemData `json:"items"`
+	ID       string       `json:"id"`
+	Amount   int64        `json:"amount"`
+	Customer CustomerData `json:"customer"`
+	Items    []ItemData   `json:"items"`
 }
 
-// ItemData type that represents a item of the order entity
+// CustomerData type that represents a customer of the order request
+type CustomerData struct {
+	Name     string `json:"name"`
+	Document string `json:"document"`
+	Address  string `json:"address"`
+}
+
+// ItemData type that represents a item of the order request
 type ItemData struct {
 	Name     string `json:"name"`
 	Price    int64  `json:"price"`
@@ -18,13 +26,6 @@ type ItemData struct {
 
 // ItemsData type that represents a collection of items
 type ItemsData []ItemData
-
-// Storage interface that defines the order storage operations
-type Storage interface {
-	Order(ctx context.Context, id string) (Order, error)
-	SaveOrder(ctx context.Context, order Order) error
-	DeleteOrder(ctx context.Context, id string) error
-}
 
 // Service interface that defines the workspace business logic
 type Service interface {
