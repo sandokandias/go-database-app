@@ -6,6 +6,11 @@ Example of a golang application with postgres database
 $ make clean build
 ```
 
+## How to test
+```bash
+$ make clean test
+```
+
 ## How to play
 
 ### running the app
