@@ -29,6 +29,9 @@ build-windows:
 
 build: build-linux build-mac build-windows
 
+test:
+	./run-tests.sh
+
 clean:
 	rm -rf $(DIST)
 	rm -rf $(BIN)
