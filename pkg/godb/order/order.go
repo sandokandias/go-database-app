@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/hashicorp/go-multierror"
 	"github.com/sandokandias/go-database-app/pkg/godb"
 	"github.com/sandokandias/go-database-app/pkg/godb/validators"
@@ -53,7 +52,7 @@ func NewOrder(ID string, amount int64, items ItemsData, customerID string) (Orde
 
 		if err == nil {
 			item := Item{
-				ID:       uuid.New().String(),
+				ID:       fmt.Sprintf("%s_%d", ID, i+1),
 				Name:     it.Name,
 				Price:    it.Price,
 				Quantity: it.Quantity,
@@ -70,7 +69,6 @@ func NewOrder(ID string, amount int64, items ItemsData, customerID string) (Orde
 	order := Order{
 		ID:         ID,
 		Amount:     amount,
-		CreatedAt:  time.Now(),
 		Items:      ii,
 		CustomerID: customerID,
 	}

@@ -3,6 +3,7 @@ package order
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/jackc/pgx/v4"
@@ -51,6 +52,7 @@ func (s DefaultService) CreateOrder(ctx context.Context, o CreateOrder) error {
 	if err != nil {
 		result = multierror.Append(result, err)
 	}
+	order.CreatedAt = time.Now()
 
 	if result != nil {
 		return result
