@@ -53,7 +53,7 @@ $ curl --location --request POST 'http://localhost:8080/orders' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "id": "$b352efa8-c50b-45fe-8c54-8a4725633732",
-    "amount": 5700,
+    "amount": 0,
     "items":[
         {
             "name": "",
