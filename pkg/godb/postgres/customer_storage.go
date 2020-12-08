@@ -26,6 +26,9 @@ func (s CustomerStorage) Customer(ctx context.Context, document string) (custome
 	var c customer.Customer
 
 	if err := s.db.QueryRow(ctx, SQL, document).Scan(&c.Name, &c.Document, &c.Address); err != nil {
+		if err == pgx.ErrNoRows {
+			return c, nil
+		}
 		return c, fmt.Errorf("query customer by %v: %w", document, err)
 	}
 	return c, nil

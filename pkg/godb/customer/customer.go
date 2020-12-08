@@ -16,15 +16,15 @@ type Customer struct {
 func NewCustomer(name, document, address string) (Customer, error) {
 	var result error
 
-	if err := validators.StringRequired("name", name); err != nil {
+	if err := validators.StringRequired("customer.name", name); err != nil {
 		result = multierror.Append(result, err)
 	}
 
-	if err := validators.StringRequired("document", document); err != nil {
+	if err := validators.StringRequired("customer.document", document); err != nil {
 		result = multierror.Append(result, err)
 	}
 
-	if err := validators.StringRequired("address", address); err != nil {
+	if err := validators.StringRequired("customer.address", address); err != nil {
 		result = multierror.Append(result, err)
 	}
 

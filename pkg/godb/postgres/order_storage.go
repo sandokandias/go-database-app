@@ -35,11 +35,11 @@ func (s OrderStorage) Order(ctx context.Context, id string) (order.Order, error)
 
 // SaveOrder persists entity order in postgresql
 func (s OrderStorage) SaveOrder(ctx context.Context, tx pgx.Tx, o order.Order) error {
-	orderSQL := `INSERT INTO orders(order_id, amount, created_at) VALUES($1, $2, $3)`
+	orderSQL := `INSERT INTO orders(order_id, amount, created_at, customer_id) VALUES($1, $2, $3, $4)`
 	itemsSQL := `INSERT INTO items(item_id, order_id, name, price, quantity) VALUES($1, $2, $3, $4, $5)`
 
 	batch := &pgx.Batch{}
-	batch.Queue(orderSQL, o.ID, o.Amount, o.CreatedAt)
+	batch.Queue(orderSQL, o.ID, o.Amount, o.CreatedAt, o.CustomerID)
 	for _, i := range o.Items {
 		batch.Queue(itemsSQL, i.ID, o.ID, i.Name, i.Price, i.Quantity)
 	}
