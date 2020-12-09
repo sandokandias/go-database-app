@@ -3,16 +3,20 @@ package order
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
-func TestNewOrder(t *testing.T) {
+func TestNew(t *testing.T) {
 	type test struct {
 		id         string
 		amount     int64
 		items      ItemsData
 		customerID string
+		createdAt  time.Time
 		want       Order
 	}
+
+	now := time.Now()
 
 	tests := []test{
 		{
@@ -26,6 +30,7 @@ func TestNewOrder(t *testing.T) {
 				},
 			},
 			customerID: "80221189076",
+			createdAt:  now,
 			want: Order{
 				ID:     "order1",
 				Amount: 3600,
@@ -38,6 +43,7 @@ func TestNewOrder(t *testing.T) {
 					},
 				},
 				CustomerID: "80221189076",
+				CreatedAt:  now,
 			},
 		},
 		{
@@ -51,6 +57,7 @@ func TestNewOrder(t *testing.T) {
 				},
 			},
 			customerID: "80221189076",
+			createdAt:  now,
 			want:       Order{},
 		},
 		{
@@ -64,6 +71,7 @@ func TestNewOrder(t *testing.T) {
 				},
 			},
 			customerID: "80221189076",
+			createdAt:  now,
 			want:       Order{},
 		},
 		{
@@ -84,6 +92,7 @@ func TestNewOrder(t *testing.T) {
 				},
 			},
 			customerID: "80221189076",
+			createdAt:  now,
 			want:       Order{},
 		},
 		{
@@ -97,6 +106,7 @@ func TestNewOrder(t *testing.T) {
 				},
 			},
 			customerID: "80221189076",
+			createdAt:  now,
 			want:       Order{},
 		},
 		{
@@ -110,12 +120,13 @@ func TestNewOrder(t *testing.T) {
 				},
 			},
 			customerID: "80221189076",
+			createdAt:  now,
 			want:       Order{},
 		},
 	}
 
 	for _, tc := range tests {
-		got, _ := NewOrder(tc.id, tc.amount, tc.items, tc.customerID)
+		got, _ := New(tc.id, tc.amount, tc.items, tc.customerID, tc.createdAt)
 		if !reflect.DeepEqual(tc.want, got) {
 			t.Fatalf("expected: %v, got: %v", tc.want, got)
 		}

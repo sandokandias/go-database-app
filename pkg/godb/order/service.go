@@ -14,13 +14,13 @@ import (
 
 // DefaultService type that implements Service interface
 type DefaultService struct {
-	txManager       *db.TxManager
+	txManager       db.TxManager
 	orderStorage    Storage
 	customerStorage customer.Storage
 }
 
 // NewService creates a new order service with storage dependency
-func NewService(txManager *db.TxManager,
+func NewService(txManager db.TxManager,
 	orderStorage Storage,
 	customerStorage customer.Storage) DefaultService {
 	return DefaultService{
@@ -43,12 +43,12 @@ func (s DefaultService) Order(ctx context.Context, id string) (Order, error) {
 func (s DefaultService) CreateOrder(ctx context.Context, o CreateOrder) error {
 	var result error
 
-	customer, err := customer.NewCustomer(o.Customer.Name, o.Customer.Document, o.Customer.Address)
+	customer, err := customer.New(o.Customer.Name, o.Customer.Document, o.Customer.Address)
 	if err != nil {
 		result = multierror.Append(result, err)
 	}
 
-	order, err := NewOrder(o.ID, o.Amount, o.Items, customer.Document)
+	order, err := New(o.ID, o.Amount, o.Items, customer.Document, time.Now())
 	if err != nil {
 		result = multierror.Append(result, err)
 	}

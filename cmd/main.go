@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/sandokandias/go-database-app/pkg/godb/db"
+	"github.com/sandokandias/go-database-app/pkg/godb/db/postgres"
 	"github.com/sandokandias/go-database-app/pkg/godb/order"
-	"github.com/sandokandias/go-database-app/pkg/godb/postgres"
 )
 
 func main() {

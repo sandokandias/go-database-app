@@ -18,8 +18,8 @@ type Order struct {
 	CustomerID string
 }
 
-// NewOrder validates the order fields and if ok, creates a new order
-func NewOrder(ID string, amount int64, items ItemsData, customerID string) (Order, error) {
+// New validates the order fields and if ok, creates a new order
+func New(ID string, amount int64, items ItemsData, customerID string, createdAt time.Time) (Order, error) {
 	var result error
 
 	if err := validators.StringRequired("id", ID); err != nil {
@@ -71,6 +71,7 @@ func NewOrder(ID string, amount int64, items ItemsData, customerID string) (Orde
 		Amount:     amount,
 		Items:      ii,
 		CustomerID: customerID,
+		CreatedAt:  createdAt,
 	}
 
 	return order, nil

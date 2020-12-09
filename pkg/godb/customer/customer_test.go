@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestNewCustomer(t *testing.T) {
+func TestNew(t *testing.T) {
 	type test struct {
 		name     string
 		document string
@@ -51,7 +51,7 @@ func TestNewCustomer(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, _ := NewCustomer(tc.name, tc.document, tc.address)
+		got, _ := New(tc.name, tc.document, tc.address)
 		if !reflect.DeepEqual(tc.want, got) {
 			t.Fatalf("expected: %v, got: %v", tc.want, got)
 		}

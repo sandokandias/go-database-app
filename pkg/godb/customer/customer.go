@@ -12,8 +12,8 @@ type Customer struct {
 	Address  string
 }
 
-// NewCustomer validates the customer fields and if ok, creates a new customer
-func NewCustomer(name, document, address string) (Customer, error) {
+// New validates the customer fields and if ok, creates a new customer
+func New(name, document, address string) (Customer, error) {
 	var result error
 
 	if err := validators.StringRequired("customer.name", name); err != nil {
