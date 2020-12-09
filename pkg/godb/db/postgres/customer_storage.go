@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/sandokandias/go-database-app/pkg/godb/customer"
+	"github.com/sandokandias/go-database-app/pkg/godb/db"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -35,8 +36,11 @@ func (s CustomerStorage) Customer(ctx context.Context, document string) (custome
 }
 
 // SaveCustomer persists entity customer in postgresql
-func (s CustomerStorage) SaveCustomer(ctx context.Context, tx pgx.Tx, customer customer.Customer) error {
+func (s CustomerStorage) SaveCustomer(tcx db.TxContext, customer customer.Customer) error {
 	SQL := `INSERT INTO customers(name, customer_id, address) VALUES($1, $2, $3)`
+
+	ctx := tcx.Context()
+	tx := tcx.Tx()
 
 	_, err := tx.Exec(ctx, SQL, customer.Name, customer.Document, customer.Address)
 	if err != nil {

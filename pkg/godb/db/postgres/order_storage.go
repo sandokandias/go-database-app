@@ -6,6 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/sandokandias/go-database-app/pkg/godb/db"
 	"github.com/sandokandias/go-database-app/pkg/godb/order"
 )
 
@@ -34,9 +35,12 @@ func (s OrderStorage) Order(ctx context.Context, id string) (order.Order, error)
 }
 
 // SaveOrder persists entity order in postgresql
-func (s OrderStorage) SaveOrder(ctx context.Context, tx pgx.Tx, o order.Order) error {
+func (s OrderStorage) SaveOrder(tcx db.TxContext, o order.Order) error {
 	orderSQL := `INSERT INTO orders(order_id, amount, created_at, customer_id) VALUES($1, $2, $3, $4)`
 	itemsSQL := `INSERT INTO items(item_id, order_id, name, price, quantity) VALUES($1, $2, $3, $4, $5)`
+
+	ctx := tcx.Context()
+	tx := tcx.Tx()
 
 	batch := &pgx.Batch{}
 	batch.Queue(orderSQL, o.ID, o.Amount, o.CreatedAt, o.CustomerID)
@@ -62,8 +66,11 @@ func (s OrderStorage) SaveOrder(ctx context.Context, tx pgx.Tx, o order.Order) e
 }
 
 // DeleteOrder removes entity order from postgresql
-func (s OrderStorage) DeleteOrder(ctx context.Context, tx pgx.Tx, id string) error {
-	SQL := `DELETE FROM orders WHERE id = ?`
+func (s OrderStorage) DeleteOrder(tcx db.TxContext, id string) error {
+	SQL := `DELETE FROM orders WHERE id = $1`
+
+	ctx := tcx.Context()
+	tx := tcx.Tx()
 
 	_, err := tx.Exec(ctx, SQL, id)
 	if err != nil {

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-multierror"
-	"github.com/jackc/pgx/v4"
 	"github.com/sandokandias/go-database-app/pkg/godb/customer"
 	"github.com/sandokandias/go-database-app/pkg/godb/db"
 	"github.com/sandokandias/go-database-app/pkg/godb/validators"
@@ -63,21 +62,20 @@ func (s DefaultService) CreateOrder(ctx context.Context, o CreateOrder) error {
 		return err
 	}
 
-	err = s.txManager.Exec(ctx, func(ctx context.Context, tx pgx.Tx) error {
+	return s.txManager.Exec(ctx, func(tcx db.TxContext) error {
+
 		if !customerExists {
-			if err := s.customerStorage.SaveCustomer(ctx, tx, customer); err != nil {
+			if err := s.customerStorage.SaveCustomer(tcx, customer); err != nil {
 				return err
 			}
 		}
 
-		if err := s.orderStorage.SaveOrder(ctx, tx, order); err != nil {
+		if err := s.orderStorage.SaveOrder(tcx, order); err != nil {
 			return err
 		}
 
 		return nil
 	})
-
-	return nil
 }
 
 func (s DefaultService) customerExists(ctx context.Context, customer customer.Customer) (bool, error) {
@@ -95,7 +93,7 @@ func (s DefaultService) DeleteOrder(ctx context.Context, id string) error {
 		return err
 	}
 
-	return s.txManager.Exec(ctx, func(ctx context.Context, tx pgx.Tx) error {
-		return s.orderStorage.DeleteOrder(ctx, tx, id)
+	return s.txManager.Exec(ctx, func(tcx db.TxContext) error {
+		return s.orderStorage.DeleteOrder(tcx, id)
 	})
 }
