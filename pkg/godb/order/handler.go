@@ -29,8 +29,8 @@ func (h Handler) Handler() http.HandlerFunc {
 	}
 }
 
-// create decode body to CreateOrder type and invoke Service to run business rules.
-// If some error is returned, the handler will render the body with the detail
+// create decodes body to CreateOrder type and invoke Service to run business logic.
+// If some error is returned, the handler will render the respose with the detail
 func (h Handler) create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var co CreateOrder
