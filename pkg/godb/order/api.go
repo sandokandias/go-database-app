@@ -27,7 +27,7 @@ type ItemData struct {
 // ItemsData type that represents a collection of items
 type ItemsData []ItemData
 
-// Service interface that defines the workspace business logic
+// Service interface that defines the order use cases
 type Service interface {
 	Order(ctx context.Context, id string) (Order, error)
 	CreateOrder(ctx context.Context, order CreateOrder) error
