@@ -32,19 +32,24 @@ func (t TxContext) Tx() pgx.Tx {
 	return t.tx
 }
 
-// TxManager type that represents the db transacion manager
-type TxManager struct {
+// TxManager interface that defines the transaction context scope
+type TxManager interface {
+	Exec(ctx context.Context, fn func(txc TxContext) error) error
+}
+
+// DefaultTxManager type that represents the db transacion manager
+type DefaultTxManager struct {
 	DB *pgxpool.Pool
 }
 
-// NewTxManager creates a new transaction manager
-func NewTxManager(db *pgxpool.Pool) TxManager {
-	return TxManager{DB: db}
+// NewDefaultTxManager creates a new transaction manager
+func NewDefaultTxManager(db *pgxpool.Pool) DefaultTxManager {
+	return DefaultTxManager{DB: db}
 }
 
 // Exec begins the transaction, call anomymous func and if everything is ok, then the transaction will be committed,
 // otherwise the transaction will be rollbacked
-func (t TxManager) Exec(ctx context.Context, fn func(txc TxContext) error) error {
+func (t DefaultTxManager) Exec(ctx context.Context, fn func(txc TxContext) error) error {
 	tx, err := t.DB.Begin(ctx)
 	if err != nil {
 		return err

@@ -14,7 +14,7 @@ func main() {
 	dbpool := postgres.Connect()
 	defer dbpool.Close()
 
-	txManager := db.NewTxManager(dbpool)
+	txManager := db.NewDefaultTxManager(dbpool)
 	customerStorage := postgres.NewCustomerStorage(dbpool)
 	orderStorage := postgres.NewOrderStorage(dbpool)
 	orderService := order.NewService(txManager, orderStorage, customerStorage)
