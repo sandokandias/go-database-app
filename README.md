@@ -13,6 +13,10 @@ $ make clean test
 
 ## How to play
 
+### dependencies
+1. Install go-migrate (https://github.com/golang-migrate/migrate)
+2. Install docker and docker-compose
+
 ### running the app
 ```bash
 $ make up
